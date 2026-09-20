@@ -29,15 +29,14 @@ jobs:
           echo "Project extracted:"
           find build-src -maxdepth 3 -type f | head -100
 
-      - name: Fix Kotlin duplicate dependencies
+      - name: Remove unnecessary Kotlin dependency
         run: |
-          cat >> build-src/app/build.gradle <<'EOF'
+          sed -i "/androidx.appcompat:appcompat/d" build-src/app/build.gradle
 
-          configurations.all {
-              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
-              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-          }
-          EOF
+      - name: Show final Gradle file
+        run: |
+          echo "===== app/build.gradle ====="
+          cat build-src/app/build.gradle
 
       - name: Setup Java 17
         uses: actions/setup-java@v4
